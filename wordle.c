@@ -39,7 +39,7 @@
 #define CLEAR_TO_END  "\033[J"
 #define HIDE_CURSOR   "\033[?25l"
 #define SHOW_CURSOR   "\033[?25h"
-
+//déclaration d'un nouveau type pour les différentes état qu'une lettre peut etre
 typedef enum{UNKNOWN, ABSENT, PRESENT, EXACT } LetterState;
 bool pick_random_word(const char *nomfichier,char *mot){
   FILE *f=fopen(nomfichier,"r");
