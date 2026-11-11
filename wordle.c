@@ -74,7 +74,94 @@ bool pick_random_word(const char *nomfichier,char *mot){
 };*/
 
 //#define WORD_COUNT (sizeof(words)/sizeof(words[0]))
-
+void removeNewLine(char *s){
+  //en windows une nouvelle ligne se fait par \r\n
+  size_t len = strlen(s);
+  if(len >0  && s[len-1]=='\n'){
+    s[len-1]='\0';
+  }
+  len = strlen(s);
+  if(len >0 && s[len-1]=='\r'){
+    s[len-1]='\0';
+  }
+}
+bool validGuess(const char *guess){
+  if (strlen(guess)!=WORD_LEN)return false;
+  for(int i=0;i<WORD_LEN;i++){
+    if(!isalpha((unsigned char)guess[i])) return false;
+  }
+  return true;
+}
+void evaluateGuess(const char *word,const char *guess,LetterState result[WORD_LEN]){
+  int remaining[26]={0};
+  guess=tolower(guess);
+  for (int i = 0; i < WORD_LEN; i++)
+  {
+    if(guess[i]==word[i]){
+      result[i]=EXACT;
+    }
+    else{
+      result[i]=UNKNOWN;
+      remaining[word[i]-'a']++;
+    }
+  }
+  for (int i = 0; i < WORD_LEN; i++)
+  {
+    if (result[i]==EXACT)
+    {
+      continue;
+    }
+    int index=guess[i]-'a';
+    if(remaining[index]>0){
+      result[i]=PRESENT;
+      remaining[index]--;
+    }
+    else
+    {
+      result[i]=ABSENT;
+    }
+  }
+}
+void updateKeyboard(const char *guess,const LetterState result[WORD_LEN],LetterState keyboard[26]){
+  guess=tolower(guess);
+  for(int i=0;i<WORD_LEN;i++){
+    int index=guess[i]-'a';
+    if(result[i]==EXACT){keyboard[index]=EXACT;}
+    else if(result[i]==PRESENT){keyboard[index]=PRESENT;}
+    else{keyboard[index]==ABSENT;}
+  }
+}
+void initKeyboard(LetterState keyboard[26]){
+  for (int i = 0; i < 26; i++)
+  {
+    keyboard[i]=UNKNOWN;
+  }
+}
+void drawTile(const char *bg,const char *fg,char letter,bool filled){
+  if(filled){
+    printf("%s%s%s %c %s",bg,fg,BOLD,(char)toupper((unsigned char)letter),RESET);
+  }
+  else{
+    printf("%s %s ",bg,RESET);
+  }
+}
+void drawStateTile(LetterState state,char letter){
+  switch(state){
+    case EXACT:drawTile(GREEN_BG,WHITE_FG,letter,true);break;
+    case ABSENT:drawTile(GRAY_BG,WHITE_FG,letter,true);break;
+    case PRESENT:drawTile(YELLOW_BG,WHITE_FG,letter,true);break;
+    default:drawTile(EMPTY_BG,WHITE_FG,letter,true);
+  }
+}
+void drawKey(LetterState state,char letter){
+  switch (state)
+  {
+    case EXACT:drawTile(GREEN_BG,WHITE_FG,letter,true);break;
+    case PRESENT:drawTile(YELLOW_BG,WHITE_FG,letter,true);break;
+    case ABSENT:drawTile(GRAY_BG,WHITE_FG,letter,true);break;
+    default:drawTile(KEY_BG,WHITE_FG,letter,true);
+  }
+}
 void clearScreen(void){
   printf("\033[2J\033[H");//\033[2J=Blank screen et \033[H=déplacer le cureur à gauche en haut
   fflush(stdout);//Pour ne pas avoir un delai et forcer le texte immédiatement
