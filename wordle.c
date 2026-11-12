@@ -55,7 +55,7 @@ bool pick_random_word(const char *nomfichier,char *mot){
   //Reparcours de fichier et arret dans cette indexe
   rewind(f);
   int i=0;
-  while(fgets(ligne,sizof(ligne),f)!=""){
+  while(fgets(ligne,sizeof(ligne),f)!=""){
     ligne[strcspn(ligne,"\r\n")]='\0';
     if(strlen(ligne)!=WORD_LEN){continue;}
     if(i==alea){
@@ -94,7 +94,6 @@ bool validGuess(const char *guess){
 }
 void evaluateGuess(const char *word,const char *guess,LetterState result[WORD_LEN]){
   int remaining[26]={0};
-  guess=tolower(guess);
   for (int i = 0; i < WORD_LEN; i++)
   {
     if(guess[i]==word[i]){
@@ -123,7 +122,6 @@ void evaluateGuess(const char *word,const char *guess,LetterState result[WORD_LE
   }
 }
 void updateKeyboard(const char *guess,const LetterState result[WORD_LEN],LetterState keyboard[26]){
-  guess=tolower(guess);
   for(int i=0;i<WORD_LEN;i++){
     int index=guess[i]-'a';
     if(result[i]==EXACT){keyboard[index]=EXACT;}
@@ -193,10 +191,11 @@ void printHeader(void){
 int main(void){
   char input[64];
   srand((unsigned)time(NULL));//manipuler le 'seed' pour ne pas avoir le meme mot chaque fois
-  char mot[WORD_LEN+1];//+1 pour le caractére '\0'
-  if (!pick_random_word("source.txt",&mot))
+  char *mot;
+  mot=malloc(sizeof(char)*(WORD_LEN+1));//+1 pour le caractére '\0'
+  if (!pick_random_word("source.txt",mot))
   {
-    printf(stderr,"Erreur d'imporation du mot\n");
+    printf("Erreur d'imporation du mot\n");
     return 1;
   }
   clearScreen();
