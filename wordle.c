@@ -46,7 +46,7 @@ bool pick_random_word(const char *nomfichier,char *mot){
   char ligne[64];
   int compt=0;
   //compter les mots de 5 caracteres
-  while(fgets(ligne,sizeof(ligne),f)!=""){
+  while(fgets(ligne,sizeof(ligne),f)!=NULL){
     ligne[strcspn(ligne,"\r\n")]='\0';//strip nouveau ligne
     if(strlen(ligne)==WORD_LEN){compt++;}
   }
@@ -55,7 +55,7 @@ bool pick_random_word(const char *nomfichier,char *mot){
   //Reparcours de fichier et arret dans cette indexe
   rewind(f);
   int i=0;
-  while(fgets(ligne,sizof(ligne),f)!=""){
+  while(fgets(ligne,sizeof(ligne),f)!=NULL){
     ligne[strcspn(ligne,"\r\n")]='\0';
     if(strlen(ligne)!=WORD_LEN){continue;}
     if(i==alea){
@@ -94,7 +94,6 @@ bool validGuess(const char *guess){
 }
 void evaluateGuess(const char *word,const char *guess,LetterState result[WORD_LEN]){
   int remaining[26]={0};
-  guess=tolower(guess);
   for (int i = 0; i < WORD_LEN; i++)
   {
     if(guess[i]==word[i]){
@@ -123,12 +122,11 @@ void evaluateGuess(const char *word,const char *guess,LetterState result[WORD_LE
   }
 }
 void updateKeyboard(const char *guess,const LetterState result[WORD_LEN],LetterState keyboard[26]){
-  guess=tolower(guess);
   for(int i=0;i<WORD_LEN;i++){
     int index=guess[i]-'a';
     if(result[i]==EXACT){keyboard[index]=EXACT;}
     else if(result[i]==PRESENT){keyboard[index]=PRESENT;}
-    else{keyboard[index]==ABSENT;}
+    else{keyboard[index]=ABSENT;}
   }
 }
 void initKeyboard(LetterState keyboard[26]){
@@ -162,6 +160,16 @@ void drawKey(LetterState state,char letter){
     default:drawTile(KEY_BG,WHITE_FG,letter,true);
   }
 }
+/*Légende compacte pour que le joueur puisse savoir les coleurs*/
+void printLegend(void){
+printf ("            ");
+drawTile(GREEN_BG,WHIT_FG, 'A',true);
+printf(HUD_COLOR " Bien Placé   " RESET);
+drawTile(YELLOW_BG,WHITE_FG, 'B',true); 
+printf(HUD_COLOR " Mauvaise Place  " RESET);
+drawTile(GRAY_BG,WHITE_FG, 'C',true);
+printf(HUD_COLOR " Inexistant  " RESET);
+}
 void clearScreen(void){
   printf("\033[2J\033[H");//\033[2J=Blank screen et \033[H=déplacer le cureur à gauche en haut
   fflush(stdout);//Pour ne pas avoir un delai et forcer le texte immédiatement
@@ -190,13 +198,44 @@ void printHeader(void){
   printf(RESET CLEAR_TO_EOL "\n");
   printf(CLEAR_TO_EOL "\n");
 }
+void renderGame(const char guesses[][WORD_LEN+1],const LetterState results[][WORD_LEN],
+		int filledrows,int animow,int revealCount,int flashIndex
+		const LetterState keyboard[26],const char *status){
+  printf(CURSOR_HOME);
+  printHeader();
+  for(int r=0;r<MAX_GUESSES;r++){
+	printf("           ");
+	for (int c=0;c<filledRows;c++){
+		if(r<filledRows){
+			drawStateTile(reults[r][c],guesses[r][c]);}
+		else if(r==animRow){
+			if(c<revealCount){
+				drawStateTile(results[r][c],guesses[r][c]);}
+			else if(c==flashIndex){
+				drawTile(FLASH_BG,BLACK_FG,guesses[r][c],true);}
+			else{drawTile(EMPTY_BG,WHITE_FG,guesses[r][c],true);}
+		}
+		else{drawTile(EMPTY_BG,WHITE_FG,' ',false);}
+		printf(RESET CLEAR_TO_EOL);
+	}
+  }
+ printf(CLEAR_TO_EOL "\n");
+ printLegend();
+ printf(RESET CLEAR_TO_EOL "\n");
+ printf(CLEAR_TO_EOL "\n");
+ const char *rows[3]={"AZERTYUIOP","QSDFGHJKLM","WXCVBN"};
+ int indents[3]={1,3,7};
+ for(int r=0;r<3;r++){
+	for(s 
+}
+}
 int main(void){
   char input[64];
   srand((unsigned)time(NULL));//manipuler le 'seed' pour ne pas avoir le meme mot chaque fois
   char mot[WORD_LEN+1];//+1 pour le caractére '\0'
-  if (!pick_random_word("source.txt",&mot))
+  if (!pick_random_word("source.txt",mot))
   {
-    printf(stderr,"Erreur d'imporation du mot\n");
+    printf("Erreur d'imporation du mot\n");
     return 1;
   }
   clearScreen();
