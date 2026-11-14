@@ -50,6 +50,22 @@ void hideCursor(void){
 	cursorHidden=true;
  }
 }
+void showCurosr(void){
+if(cursorHiddne){
+	printf(SHOW_CURSOR);
+	fflush(stdout);
+	cursorHidden=true;
+	}
+}
+void cleanup(void){
+showCursor();
+}
+void sleepMs(long ms){
+struct timespec ts;
+ts.tv_sec=ms/1000;
+ts.tv_nsec=(ms%1000)*1000000L;
+nanosleep(&ts,NULL);
+}
 bool pick_random_word(const char *nomfichier,char *mot){
   FILE *f=fopen(nomfichier,"r");
   char ligne[64];
@@ -248,6 +264,48 @@ void renderGame(const char guesses[][WORD_LEN+1],const LetterState results[][WOR
  printf("%s",status);
  printf(CLEAR_TO_EOL CLEAR_TO_END);
  fflush(stdout);
+}
+
+void animateGuess(char guesses[][WORD_LEN+1],LetterState results[][WORD_LEN],int row,
+			LetterState keyboard[26]){
+renderGame(guesses,results,row,row,0,-1,keyboard,"");
+sleepMs(250);
+for(int c=0;c<WORD_LEN;c++){
+	renderGame(guesses,results,row,row,c,c,keyboard,"");
+	sleepMs(125);
+	renderGame(guesses,results,row,row,c+1,-1,keyboard,"");
+	sleepMs(200);
+	}
+updateKeyboard(guesses[row],results[row],keyboard);
+renderGame(guesses,results,row+1,-1,0,-1,keyboard,"");
+sleepMs(100);
+showCursor();
+}
+void printInstructions(void){
+clearScreen();
+printf(CLEAR_TO_EOL "\n");
+printFancyTitle();
+printf(RESET CLEAR_TO_EOL "\n");
+printf(CLEAR_TO_EOL "\n");
+printf(TITLE_COLOR "           COMMENT JOUER??" RESET CLEAR_TO_EOL "\n");
+printf(CLEAR_TO_EOL "\n");
+printf(HUD_COLOR "             Deviner le mot de 5 Lettres dans 5 essais." RESET CLEAR_TO_EOL "\n");
+printf(HUD_COLOR "             Aprés chaque essaie, les couleurs des cadres vous disent si vous votre proposition est vraie ou pas:" RESET CLEAR_TO_EOL "\n");
+printf(CLEAR_TO_EOL "\n");
+printf("               ");
+drawTile(GREEN_BG,WHUTE_FG,'A',true);
+printf(HUD_COLOR " Vert - la lettre existe dans le mot et bien placée" RESET CLEAR_TO_EOL "\n");
+printf("               ");
+drawTile(YELLOW_BG,WHITE_FG,'B',true);
+printf(HUD_COLOR " Jaune - la lettre existe dans le mot mais mal placée" RESET CLEAR_TO_EOL "\n");
+printf("               ");
+drawTile(GRAY_BG,WHITE_FG,'C',true);
+printf(HUD_COLOR " Gris - la lettre n'existe pas dans le mot" RESET CLEAR_TO_EOL "\n");
+printf(CLEAR_TO_EOL "\n");
+printf(HUD_COLOR "          Veuillez donner votre proposition et appuyez Entrer. Ecrire q pour quitter."RESET CLEAR_TO_EOL "\n");
+printf(CLEAR_TO_EOL "\n");
+printf(PROMPT_COLOR "        Appuyez Entrer pour commencer..." RESET CLEAR_TO_EOL "\n");
+fflush(stdout);
 }
 int main(void){
   char input[64];
