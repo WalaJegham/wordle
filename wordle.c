@@ -55,6 +55,7 @@ bool pick_random_word(const char *nomfichier,char *mot){
   //Reparcours de fichier et arret dans cette indexe
   rewind(f);
   int i=0;
+<<<<<<< HEAD
   while(fgets(ligne,sizeof(ligne),f)!=NULL){
     ligne[strcspn(ligne,"\r\n")]='\0';
     if(strlen(ligne)!=WORD_LEN){continue;}
@@ -232,7 +233,12 @@ void renderGame(const char guesses[][WORD_LEN+1],const LetterState results[][WOR
 int main(void){
   char input[64];
   srand((unsigned)time(NULL));//manipuler le 'seed' pour ne pas avoir le meme mot chaque fois
+<<<<<<< HEAD
   char mot[WORD_LEN+1];//+1 pour le caractére '\0'
+=======
+  char *mot;
+  mot=malloc(sizeof(char)*(WORD_LEN+1));//+1 pour le caractére '\0'
+>>>>>>> 4e84fbf1bda8163d4737ec9d5dd932eac7e79f26
   if (!pick_random_word("source.txt",mot))
   {
     printf("Erreur d'imporation du mot\n");
