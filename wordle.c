@@ -50,8 +50,8 @@ void hideCursor(void){
 	cursorHidden=true;
  }
 }
-void showCurosr(void){
-if(cursorHiddne){
+void showCursor(void){
+if(cursorHidden){
 	printf(SHOW_CURSOR);
 	fflush(stdout);
 	cursorHidden=true;
@@ -188,7 +188,7 @@ void drawKey(LetterState state,char letter){
 /*Légende compacte pour que le joueur puisse savoir les coleurs*/
 void printLegend(void){
 printf ("            ");
-drawTile(GREEN_BG,WHIT_FG, 'A',true);
+drawTile(GREEN_BG,WHITE_FG, 'A',true);
 printf(HUD_COLOR " Bien Placé   " RESET);
 drawTile(YELLOW_BG,WHITE_FG, 'B',true); 
 printf(HUD_COLOR " Mauvaise Place  " RESET);
@@ -293,7 +293,7 @@ printf(HUD_COLOR "             Deviner le mot de 5 Lettres dans 5 essais." RESET
 printf(HUD_COLOR "             Aprés chaque essaie, les couleurs des cadres vous disent si vous votre proposition est vraie ou pas:" RESET CLEAR_TO_EOL "\n");
 printf(CLEAR_TO_EOL "\n");
 printf("               ");
-drawTile(GREEN_BG,WHUTE_FG,'A',true);
+drawTile(GREEN_BG,WHITE_FG,'A',true);
 printf(HUD_COLOR " Vert - la lettre existe dans le mot et bien placée" RESET CLEAR_TO_EOL "\n");
 printf("               ");
 drawTile(YELLOW_BG,WHITE_FG,'B',true);
@@ -310,12 +310,8 @@ fflush(stdout);
 int main(void){
   char input[64];
   srand((unsigned)time(NULL));//manipuler le 'seed' pour ne pas avoir le meme mot chaque fois
-<<<<<<< HEAD
-  char mot[WORD_LEN+1];//+1 pour le caractére '\0'
-=======
   char *mot;
   mot=malloc(sizeof(char)*(WORD_LEN+1));//+1 pour le caractére '\0'
->>>>>>> 4e84fbf1bda8163d4737ec9d5dd932eac7e79f26
   if (!pick_random_word("source.txt",mot))
   {
     printf("Erreur d'imporation du mot\n");
