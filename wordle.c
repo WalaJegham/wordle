@@ -41,6 +41,15 @@
 #define SHOW_CURSOR   "\033[?25h"
 //déclaration d'un nouveau type pour les différentes état qu'une lettre peut etre
 typedef enum{UNKNOWN, ABSENT, PRESENT, EXACT } LetterState;
+
+static bool cursorHidden=false;
+void hideCursor(void){
+ if(!cursorHidden){
+	printf(HIDE_CURSOR);
+	fflush(stdout);
+	cursorHidden=true;
+ }
+}
 bool pick_random_word(const char *nomfichier,char *mot){
   FILE *f=fopen(nomfichier,"r");
   char ligne[64];
@@ -226,8 +235,19 @@ void renderGame(const char guesses[][WORD_LEN+1],const LetterState results[][WOR
  const char *rows[3]={"AZERTYUIOP","QSDFGHJKLM","WXCVBN"};
  int indents[3]={1,3,7};
  for(int r=0;r<3;r++){
-	for(s 
-}
+	for(int s=0;s<indents[r];s++){
+        printf("   ");	
+	} 
+	for(int i=0;rows[r][i]!='\0';i++){
+		char ch=rows[r][i];
+		drawKey(keyboard[ch-'A'],ch);
+	}
+	printf(RESET CLEAR_TO_EOL "\n");
+ }
+ printf(CLEAR_TO_EOL "\n");
+ printf("%s",status);
+ printf(CLEAR_TO_EOL CLEAR_TO_END);
+ fflush(stdout);
 }
 int main(void){
   char input[64];
