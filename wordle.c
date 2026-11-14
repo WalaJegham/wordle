@@ -55,7 +55,6 @@ bool pick_random_word(const char *nomfichier,char *mot){
   //Reparcours de fichier et arret dans cette indexe
   rewind(f);
   int i=0;
-<<<<<<< HEAD
   while(fgets(ligne,sizeof(ligne),f)!=NULL){
     ligne[strcspn(ligne,"\r\n")]='\0';
     if(strlen(ligne)!=WORD_LEN){continue;}
