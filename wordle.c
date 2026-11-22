@@ -1,7 +1,7 @@
 #define _POSIX_C_SOURCE 200809L // UTILISER LES FONCTIONS POSIX REVISEES 2008-2009
 #define _DEFAULT_SOURCE         // IMPORTER LES FONCTIONS USUELLES CELLES DE LINUX/BSD PROVIDED
 #define WORD_LEN 5              // Longueur du mot à deviner
-#define MAX_GUESSES 5           // Nombre maximum d'essais
+#define MAX_GUESSES 6          // Nombre maximum d'essais
 
 #include <stdio.h>   // printf, fgets, fopen...
 #include <stdlib.h>  // malloc, free, rand, srand, atexit
