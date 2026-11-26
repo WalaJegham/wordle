@@ -138,7 +138,7 @@ bool pick_random_word(const char *nomfichier, char *mot)
 void removeNewLine(char *s)
 {
   // en windows une nouvelle ligne se fait par \r\n
-  size_t len = strlen(s);
+  int len = strlen(s);
   if (len > 0 && s[len - 1] == '\n')
   {
     s[len - 1] = '\0';
